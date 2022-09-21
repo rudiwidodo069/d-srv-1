@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  database:
+    image: "postgres:14"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: test_project
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data/
+
+  dsrv-1:
+    image: dsrv-1:1.0.0
+    container_name: dsrv-1:1.0.0
+    build: .
+    ports:
+      - 8000:8000
+    environment:
+      - PORT=8000
+      - DB_NAME=test_project
+      - DB_USER=postgres
+      - DB_PASS=root
+    depends_on:
+      - database
+    volumes:
+      - ./:/app
+
+volumes:
+  database-data:
